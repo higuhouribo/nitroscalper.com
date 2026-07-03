@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI CHART V+ — Chart Scanner</title>
+
+  <!-- Handwriting font for title -->
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Neon flame background -->
+    <div class="neon-flame" aria-hidden="true"></div>
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <h1 class="brand">AI CHART V+</h1>
+      <div class="auth-area">
+        <button id="btn-show-info" class="neon-btn ghost">Info</button>
+        <span id="user-greeting" class="user-greeting"></span>
+        <button id="btn-login" class="neon-btn ghost">Login</button>
+        <button id="btn-logout" class="neon-btn ghost hidden">Logout</button>
+      </div>
+    </header>
+
+    <!-- Main area -->
+    <main class="main">
+      <!-- Left: actions & results -->
+      <section class="panel panel-left">
+        <div class="card">
+          <h2>Upload Chart</h2>
+          <p class="muted">Upload a screenshot of your current chart. The app will scan using a price-action heuristic and return signals, SL & TP and the rationale.</p>
+
+          <div class="controls">
+            <label class="neon-file-label">
+              <input id="file-input" type="file" accept="image/*" />
+              <span class="neon-btn ghost wide">Upload Chart</span>
+            </label>
+            <button id="btn-scan" class="neon-btn primary" disabled>Scan Image</button>
+            <button id="btn-clear-history" class="neon-btn ghost danger">Clear History</button>
+          </div>
+
+          <div id="logs" class="logs" aria-live="polite"></div>
+        </div>
+
+        <div id="result-card" class="card result-card hidden">
+          <h3 id="result-signal" class="result-signal"></h3>
+          <div class="result-body">
+            <p id="result-reason" class="muted"></p>
+            <p><strong>Entry (approx):</strong> <span id="result-entry">—</span></p>
+            <p><strong>Stop Loss:</strong> <span id="result-sl">—</span></p>
+            <p><strong>Take Profit:</strong> <span id="result-tp">—</span></p>
+            <div class="result-actions">
+              <button id="btn-save-history" class="neon-btn ghost">Save to History</button>
+              <button id="btn-download-image" class="neon-btn ghost">Download Image</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: history -->
+      <aside class="panel panel-right">
+        <div class="card">
+          <h2>History</h2>
+          <div id="history-list" class="history-list">
+            <p class="muted">No uploads yet.</p>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <small>Prototype scanner • Not financial advice • Signals are algorithmic heuristics</small>
+    </footer>
+
+    <!-- Info modal -->
+    <div id="modal-info" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-panel">
+        <button class="modal-close neon-btn ghost" id="modal-info-close">Close</button>
+        <h2>AI CHART V+</h2>
+        <p><strong>OWNER:</strong> LIL JEE FX PMT</p>
+        <p><strong>CONTACT:</strong> +27 73 739 3170</p>
+        <p><strong>EMAIL:</strong> liljee084@gmail.com</p>
+        <hr>
+        <p class="muted">Upload chart screenshots and the scanner will produce signals using a client-side price-action heuristic. For production use, integrate with market data and a validated ML model.</p>
+      </div>
+    </div>
+
+    <!-- Signup/login modal -->
+    <div id="modal-auth" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-panel">
+        <button class="modal-close neon-btn ghost" id="modal-auth-close">Close</button>
+        <div id="auth-forms">
+          <!-- Signup -->
+          <form id="form-signup" class="auth-form">
+            <h3>Create Account</h3>
+            <label>Name<input required id="su-name" type="text" placeholder="Full name" /></label>
+            <label>Phone<input required id="su-phone" type="tel" placeholder="+27 ..." /></label>
+            <label>Email<input required id="su-email" type="email" placeholder="email@example.com" /></label>
+            <label>Create PIN<input required id="su-pin" type="password" maxlength="6" placeholder="4-6 digit pin" /></label>
+            <div class="form-actions">
+              <button type="submit" class="neon-btn primary">Sign up</button>
+              <button type="button" id="switch-to-login" class="neon-btn ghost">Have account? Login</button>
+            </div>
+            <p class="muted small">Sign up data is stored locally on this device only (localStorage).</p>
+          </form>
+
+          <!-- Login -->
+          <form id="form-login" class="auth-form hidden">
+            <h3>Login</h3>
+            <label>Email<input required id="li-email" type="email" placeholder="email@example.com" /></label>
+            <label>PIN<input required id="li-pin" type="password" maxlength="6" placeholder="PIN" /></label>
+            <div class="form-actions">
+              <button type="submit" class="neon-btn primary">Login</button>
+              <button type="button" id="switch-to-signup" class="neon-btn ghost">Create account</button>
+            </div>
+            <p class="muted small">This demo stores your account locally. For production, wire server-side auth.</p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden canvas for image processing -->
+    <canvas id="scan-canvas" class="hidden" width="800" height="400"></canvas>
+  </div>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
